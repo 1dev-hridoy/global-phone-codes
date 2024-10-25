@@ -30,6 +30,7 @@ app.get('/', (req, res) => {
     <body class="bg-gray-100">
         <div class="container mx-auto px-4 py-8">
             <h1 class="text-2xl font-bold mb-4">Country Phone Codes</h1>
+            <input id="search" type="text" placeholder="Search..." class="mb-4 px-4 py-2 border rounded w-full" />
             <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                 <thead>
                     <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -39,7 +40,7 @@ app.get('/', (req, res) => {
                         <th class="py-3 px-6 text-left">Action</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-600 text-sm font-light">
+                <tbody id="phoneCodesTable" class="text-gray-600 text-sm font-light">
                     ${phoneCodes.map(code => `
                     <tr class="border-b border-gray-200 hover:bg-gray-100">
                         <td class="py-3 px-6">${code.country}</td>
@@ -65,6 +66,31 @@ app.get('/', (req, res) => {
                         console.error('Failed to copy: ', err);
                     });
             }
+
+            // Search function
+            const searchInput = document.getElementById('search');
+            const phoneCodesTable = document.getElementById('phoneCodesTable');
+            searchInput.addEventListener('input', function() {
+                const searchValue = this.value.toLowerCase();
+                const rows = phoneCodesTable.getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName('td');
+                    let found = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        if (cells[j]) {
+                            const cellText = cells[j].textContent.toLowerCase();
+                            if (cellText.indexOf(searchValue) > -1) {
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    rows[i].style.display = found ? '' : 'none';
+                }
+            });
         </script>
     </body>
     </html>
